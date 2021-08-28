@@ -1,3 +1,5 @@
+import webbrowser
+
 import click
 from PyInquirer import prompt
 from click import echo
@@ -37,22 +39,21 @@ def product_list(store, filter_name):
 @click.option('-s', '--store', required=True)
 @click.option('-w', '--web', is_flag=True)
 def product_view(product_id, store, web):
-    bc_products = bigcommerce.Products(store_hash=store_db[store]['store_hash'],
-                                       access_token=store_db[store]['access_token'])
-    product = bc_products.retrieve(product_id)
+    catalog_product = bigcommerce.CatalogProduct.get(store_hash=store_db[store]['store_hash'],
+                                                     access_token=store_db[store]['access_token'],
+                                                     resource_id=product_id,
+                                                     params={'include': 'variants'})
 
-    bc_variants = bigcommerce.Variants(store_hash=store_db[store]['store_hash'],
-                                       access_token=store_db[store]['access_token'])
-    variants = bc_variants.get(product_id)
-
+    catalog_product_variants = bigcommerce.CatalogProductVariant.get(store_hash=store_db[store]['store_hash'],
+                                                                     access_token=store_db[store]['access_token'],
+                                                                     resource_id=product_id)
     if web:
-        bc_products.web_view(product_id)
+        webbrowser.open(
+            f'https://store-{store_db[store]["store_hash"]}.mybigcommerce.com/manage/products/edit/{product_id}')
     else:
-        table = bc_products.get_pretty_table([product])
-        echo(table)
-
-        table = bc_variants.get_pretty_table(variants)
-        echo(table)
+        echo(pretty_table.CatalogProduct.build_table([catalog_product]))
+        if len(catalog_product_variants) > 1:
+            echo(pretty_table.CatalogProductVariant.build_table(catalog_product_variants))
 
 
 @product.command('edit')

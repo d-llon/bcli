@@ -1,1 +1,2 @@
 from .catalog_product import CatalogProduct
+from .catalog_product_variant import CatalogProductVariant

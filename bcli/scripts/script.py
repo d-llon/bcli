@@ -60,12 +60,12 @@ def product_view(product_id, store, web):
 @click.argument('product_id')
 @click.option('-s', '--store', required=True)
 def product_edit(product_id, store):
-    bc_products = bigcommerce.Products(store_hash=store_db[store]['store_hash'],
-                                       access_token=store_db[store]['access_token'])
-    product = bc_products.retrieve(product_id)
+    catalog_product = bigcommerce.CatalogProduct.get(store_hash=store_db[store]['store_hash'],
+                                                     access_token=store_db[store]['access_token'],
+                                                     resource_id=product_id,
+                                                     params={'include': 'variants'})
 
-    table = bc_products.get_pretty_table([product])
-    echo(table)
+    echo(pretty_table.CatalogProduct.build_table([catalog_product]))
 
     user_input = prompt([
         {
@@ -88,10 +88,16 @@ def product_edit(product_id, store):
 
     if user_input['confirm']:
         if user_input['field'] == 'price':
-            bc_products.patch(product_id, price=float(user_input['value']))
+            bigcommerce.CatalogProduct.put(store_hash=store_db[store]['store_hash'],
+                                           access_token=store_db[store]['access_token'],
+                                           resource_id=product_id,
+                                           json={'price': float(user_input['value'])})
             echo('Edit complete.')
         if user_input['field'] == 'sale_price':
-            bc_products.patch(product_id, sale_price=float(user_input['value']))
+            bigcommerce.CatalogProduct.put(store_hash=store_db[store]['store_hash'],
+                                           access_token=store_db[store]['access_token'],
+                                           resource_id=product_id,
+                                           json={'sale_price': float(user_input['value'])})
             echo('Edit complete.')
     else:
         echo('Edit canceled.')

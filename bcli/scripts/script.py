@@ -72,7 +72,7 @@ def product_edit(product_id, store):
             'type': 'list',
             'name': 'field',
             'message': 'What field would you like to edit?',
-            'choices': ['price', 'sale_price']
+            'choices': list(catalog_product.keys())
         },
         {
             'type': 'input',
@@ -87,17 +87,10 @@ def product_edit(product_id, store):
     ])
 
     if user_input['confirm']:
-        if user_input['field'] == 'price':
-            bigcommerce.CatalogProduct.put(store_hash=store_db[store]['store_hash'],
-                                           access_token=store_db[store]['access_token'],
-                                           resource_id=product_id,
-                                           json={'price': float(user_input['value'])})
-            echo('Edit complete.')
-        if user_input['field'] == 'sale_price':
-            bigcommerce.CatalogProduct.put(store_hash=store_db[store]['store_hash'],
-                                           access_token=store_db[store]['access_token'],
-                                           resource_id=product_id,
-                                           json={'sale_price': float(user_input['value'])})
-            echo('Edit complete.')
+        bigcommerce.CatalogProduct.put(store_hash=store_db[store]['store_hash'],
+                                       access_token=store_db[store]['access_token'],
+                                       resource_id=product_id,
+                                       json={user_input['field']: user_input['value']})
+        echo('Edit complete.')
     else:
         echo('Edit canceled.')

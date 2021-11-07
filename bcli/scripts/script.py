@@ -143,7 +143,8 @@ def product_view(product_id, store, web):
 @product.command('edit')
 @click.argument('product_id')
 @click.option('-s', '--store', required=True)
-def product_edit(product_id, store):
+@click.option('--field', default=None)
+def product_edit(product_id, store, field):
     store = get_store_creds(store)
     catalog_product = bigcommerce.CatalogProduct.get(store_hash=store['store_hash'],
                                                      access_token=store['access_token'],
@@ -152,17 +153,23 @@ def product_edit(product_id, store):
 
     echo(pretty_table.CatalogProduct.build_table([catalog_product]))
 
+    if not field:
+        user_input = prompt([
+            {
+                'type': 'list',
+                'name': 'field',
+                'message': 'What field would you like to edit?',
+                'choices': list(catalog_product.keys())
+            },
+        ])
+        field = user_input['field']
+
     user_input = prompt([
-        {
-            'type': 'list',
-            'name': 'field',
-            'message': 'What field would you like to edit?',
-            'choices': list(catalog_product.keys())
-        },
         {
             'type': 'input',
             'name': 'value',
-            'message': f'New value: '
+            'message': f'New value: ',
+            'default': catalog_product[field]
         },
         {
             'type': 'confirm',
@@ -175,7 +182,7 @@ def product_edit(product_id, store):
         bigcommerce.CatalogProduct.put(store_hash=store['store_hash'],
                                        access_token=store['access_token'],
                                        resource_id=product_id,
-                                       json={user_input['field']: user_input['value']})
+                                       json={field: user_input['value']})
         echo('Edit complete.')
     else:
         echo('Edit canceled.')

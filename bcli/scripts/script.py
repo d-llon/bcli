@@ -21,7 +21,7 @@ def store():
 
 @store.command('add')
 def store_add():
-    """  """
+    """ Save store API credentials. """
     user_input = prompt([
         {'type': 'input', 'name': 'store_name', 'message': f'Store name: '},
         {'type': 'input', 'name': 'store_hash', 'message': f'Store hash: '},
@@ -39,7 +39,7 @@ def store_add():
 
 @store.command('list')
 def store_list():
-    """  """
+    """ Print all saved API credentials. """
     stores = read_from_app_dir('stores.json')
 
     table = PrettyTable()
@@ -61,7 +61,7 @@ def store_list():
 @store.command('delete')
 @click.argument('store_name')
 def store_delete(store_name):
-    """  """
+    """ Delete a set of API credentials by store name. """
     delete_from_app_dir('stores.json', key=store_name)
     echo(f'Deleted store ({store_name}).')
 

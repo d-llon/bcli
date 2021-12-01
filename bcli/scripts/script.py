@@ -3,11 +3,9 @@ import webbrowser
 import click
 from PyInquirer import prompt
 from click import echo
+from prettytable import PrettyTable
 
-from ..utils import bigcommerce, pretty_table
-
-store_db = {
-}
+from ..utils import bigcommerce, pretty_table, read_from_app_dir, write_to_app_dir, delete_from_app_dir
 
 
 @click.group()
@@ -15,6 +13,60 @@ def cli():
     pass
 
 
+# Store Commands -------------------------------------------------------------------------------------------------------
+@cli.group()
+def store():
+    pass
+
+
+@store.command('add')
+def store_add():
+    """ Save store API credentials. """
+    user_input = prompt([
+        {'type': 'input', 'name': 'store_name', 'message': f'Store name: '},
+        {'type': 'input', 'name': 'store_hash', 'message': f'Store hash: '},
+        {'type': 'input', 'name': 'access_token', 'message': f'Access token: '},
+    ])
+
+    if read_from_app_dir('stores.json').get(user_input['store_name']):
+        user_input['confirm'] = prompt([{'type': 'confirm', 'name': 'confirm', 'message': f'Overwrite? '}])['confirm']
+
+    if user_input.get('confirm', True):
+        write_to_app_dir('stores.json',
+                         key=user_input['store_name'],
+                         value={'store_hash': user_input['store_hash'], 'access_token': user_input['access_token']})
+
+
+@store.command('list')
+def store_list():
+    """ Print all saved API credentials. """
+    stores = read_from_app_dir('stores.json')
+
+    table = PrettyTable()
+    table.field_names = ['Store', 'Store Hash', 'Access Token']
+    table.align['Store'] = "l"
+    table.align['Store Hash'] = "l"
+    table.align['Access Token'] = "l"
+
+    for store_name, store_creds in stores.items():
+        table.add_row([
+            store_name,
+            store_creds['store_hash'],
+            store_creds['access_token']
+        ])
+
+    echo(table)
+
+
+@store.command('delete')
+@click.argument('store_name')
+def store_delete(store_name):
+    """ Delete a set of API credentials by store name. """
+    delete_from_app_dir('stores.json', key=store_name)
+    echo(f'Deleted store ({store_name}).')
+
+
+# Product Commands -----------------------------------------------------------------------------------------------------
 @cli.group()
 def product():
     pass
@@ -24,8 +76,9 @@ def product():
 @click.option('-s', '--store', required=True)
 @click.option('--filter_name', default=None)
 def product_list(store, filter_name):
-    catalog_products = bigcommerce.CatalogProduct.get(store_hash=store_db[store]['store_hash'],
-                                                      access_token=store_db[store]['access_token'],
+    store = read_from_app_dir('stores.json')[store]
+    catalog_products = bigcommerce.CatalogProduct.get(store_hash=store['store_hash'],
+                                                      access_token=store['access_token'],
                                                       params={'limit': 250, 'include': 'variants'})
     if filter_name:
         catalog_products = [p for p in catalog_products
@@ -39,17 +92,18 @@ def product_list(store, filter_name):
 @click.option('-s', '--store', required=True)
 @click.option('-w', '--web', is_flag=True)
 def product_view(product_id, store, web):
-    catalog_product = bigcommerce.CatalogProduct.get(store_hash=store_db[store]['store_hash'],
-                                                     access_token=store_db[store]['access_token'],
+    store = read_from_app_dir('stores.json')[store]
+    catalog_product = bigcommerce.CatalogProduct.get(store_hash=store['store_hash'],
+                                                     access_token=store['access_token'],
                                                      resource_id=product_id,
                                                      params={'include': 'variants'})
 
-    catalog_product_variants = bigcommerce.CatalogProductVariant.get(store_hash=store_db[store]['store_hash'],
-                                                                     access_token=store_db[store]['access_token'],
+    catalog_product_variants = bigcommerce.CatalogProductVariant.get(store_hash=store['store_hash'],
+                                                                     access_token=store['access_token'],
                                                                      resource_id=product_id)
     if web:
         webbrowser.open(
-            f'https://store-{store_db[store]["store_hash"]}.mybigcommerce.com/manage/products/edit/{product_id}')
+            f'https://store-{store["store_hash"]}.mybigcommerce.com/manage/products/edit/{product_id}')
     else:
         echo(pretty_table.CatalogProduct.build_table([catalog_product]))
         if len(catalog_product_variants) > 1:
@@ -59,25 +113,33 @@ def product_view(product_id, store, web):
 @product.command('edit')
 @click.argument('product_id')
 @click.option('-s', '--store', required=True)
-def product_edit(product_id, store):
-    catalog_product = bigcommerce.CatalogProduct.get(store_hash=store_db[store]['store_hash'],
-                                                     access_token=store_db[store]['access_token'],
+@click.option('--field', default=None)
+def product_edit(product_id, store, field):
+    store = read_from_app_dir('stores.json')[store]
+    catalog_product = bigcommerce.CatalogProduct.get(store_hash=store['store_hash'],
+                                                     access_token=store['access_token'],
                                                      resource_id=product_id,
                                                      params={'include': 'variants'})
 
     echo(pretty_table.CatalogProduct.build_table([catalog_product]))
 
+    if not field:
+        user_input = prompt([
+            {
+                'type': 'list',
+                'name': 'field',
+                'message': 'What field would you like to edit?',
+                'choices': list(catalog_product.keys())
+            },
+        ])
+        field = user_input['field']
+
     user_input = prompt([
-        {
-            'type': 'list',
-            'name': 'field',
-            'message': 'What field would you like to edit?',
-            'choices': list(catalog_product.keys())
-        },
         {
             'type': 'input',
             'name': 'value',
-            'message': f'New value: '
+            'message': f'New value: ',
+            'default': catalog_product[field]
         },
         {
             'type': 'confirm',
@@ -87,10 +149,10 @@ def product_edit(product_id, store):
     ])
 
     if user_input['confirm']:
-        bigcommerce.CatalogProduct.put(store_hash=store_db[store]['store_hash'],
-                                       access_token=store_db[store]['access_token'],
+        bigcommerce.CatalogProduct.put(store_hash=store['store_hash'],
+                                       access_token=store['access_token'],
                                        resource_id=product_id,
-                                       json={user_input['field']: user_input['value']})
+                                       json={field: user_input['value']})
         echo('Edit complete.')
     else:
         echo('Edit canceled.')

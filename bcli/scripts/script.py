@@ -27,12 +27,14 @@ def store_add():
         {'type': 'input', 'name': 'store_hash', 'message': f'Store hash: '},
         {'type': 'input', 'name': 'access_token', 'message': f'Access token: '},
     ])
-    # TODO: Confirm overwrite?
-    # TODO: Confirm user input is valid before saving
 
-    write_to_app_dir('stores.json',
-                     key=user_input['store_name'],
-                     value={'store_hash': user_input['store_hash'], 'access_token': user_input['access_token']})
+    if read_from_app_dir('stores.json').get(user_input['store_name']):
+        user_input['confirm'] = prompt([{'type': 'confirm', 'name': 'confirm', 'message': f'Overwrite? '}])['confirm']
+
+    if user_input.get('confirm', True):
+        write_to_app_dir('stores.json',
+                         key=user_input['store_name'],
+                         value={'store_hash': user_input['store_hash'], 'access_token': user_input['access_token']})
 
 
 @store.command('list')
@@ -60,10 +62,8 @@ def store_list():
 @click.argument('store_name')
 def store_delete(store_name):
     """  """
-    # TODO: Delete confirmation
-    # TODO: Decide if I want to check if a store exists before run .pop on it
-
     delete_from_app_dir('stores.json', key=store_name)
+    echo(f'Deleted store ({store_name}).')
 
 
 # Product Commands -----------------------------------------------------------------------------------------------------

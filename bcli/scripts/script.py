@@ -1,13 +1,11 @@
-import json
 import webbrowser
-from pathlib import Path
 
 import click
 from PyInquirer import prompt
 from click import echo
 from prettytable import PrettyTable
 
-from ..utils import bigcommerce, pretty_table, get_store_creds
+from ..utils import bigcommerce, pretty_table, read_from_app_dir, write_to_app_dir, delete_from_app_dir
 
 
 @click.group()
@@ -25,42 +23,22 @@ def store():
 def store_add():
     """  """
     user_input = prompt([
-        {'type': 'input', 'name': 'store', 'message': f'Store name: '},
-        {'type': 'input', 'name': 'hash', 'message': f'Store hash: '},
+        {'type': 'input', 'name': 'store_name', 'message': f'Store name: '},
+        {'type': 'input', 'name': 'store_hash', 'message': f'Store hash: '},
         {'type': 'input', 'name': 'access_token', 'message': f'Access token: '},
     ])
-
     # TODO: Confirm overwrite?
     # TODO: Confirm user input is valid before saving
 
-    app_dir = click.get_app_dir('bcli')
-    if not Path(app_dir).is_dir():
-        Path(app_dir).mkdir(parents=True, exist_ok=True)
-
-    config_path = f'{app_dir}/stores.json'
-    if not Path(config_path).is_file():
-        with open(config_path, 'w') as stores_file:
-            stores = {}
-            stores[user_input['store']] = {'store_hash': user_input['hash'], 'access_token': user_input['access_token']}
-            json.dump(stores, stores_file)
-    else:
-        with open(config_path, 'r') as stores_file:
-            stores = json.load(stores_file)
-            stores[user_input['store']] = {'store_hash': user_input['hash'], 'access_token': user_input['access_token']}
-        with open(config_path, 'w') as stores_file:
-            json.dump(stores, stores_file)
+    write_to_app_dir('stores.json',
+                     key=user_input['store_name'],
+                     value={'store_hash': user_input['store_hash'], 'access_token': user_input['access_token']})
 
 
 @store.command('list')
 def store_list():
     """  """
-    app_dir = click.get_app_dir('bcli')
-    config_path = f'{app_dir}/stores.json'
-    if not Path(config_path).is_file():
-        stores = {}
-    else:
-        with open(config_path, 'r') as stores_file:
-            stores = json.load(stores_file)
+    stores = read_from_app_dir('stores.json')
 
     table = PrettyTable()
     table.field_names = ['Store', 'Store Hash', 'Access Token']
@@ -79,21 +57,13 @@ def store_list():
 
 
 @store.command('delete')
-@click.argument('store')
-def store_delete(store):
+@click.argument('store_name')
+def store_delete(store_name):
     """  """
-    app_dir = click.get_app_dir('bcli')
-    config_path = f'{app_dir}/stores.json'
-
     # TODO: Delete confirmation
     # TODO: Decide if I want to check if a store exists before run .pop on it
 
-    if Path(config_path).is_file():
-        with open(config_path, 'r') as stores_file:
-            stores = json.load(stores_file)
-            stores.pop(store)
-        with open(config_path, 'w') as stores_file:
-            json.dump(stores, stores_file)
+    delete_from_app_dir('stores.json', key=store_name)
 
 
 # Product Commands -----------------------------------------------------------------------------------------------------
@@ -106,7 +76,7 @@ def product():
 @click.option('-s', '--store', required=True)
 @click.option('--filter_name', default=None)
 def product_list(store, filter_name):
-    store = get_store_creds(store)
+    store = read_from_app_dir('stores.json')[store]
     catalog_products = bigcommerce.CatalogProduct.get(store_hash=store['store_hash'],
                                                       access_token=store['access_token'],
                                                       params={'limit': 250, 'include': 'variants'})
@@ -122,7 +92,7 @@ def product_list(store, filter_name):
 @click.option('-s', '--store', required=True)
 @click.option('-w', '--web', is_flag=True)
 def product_view(product_id, store, web):
-    store = get_store_creds(store)
+    store = read_from_app_dir('stores.json')[store]
     catalog_product = bigcommerce.CatalogProduct.get(store_hash=store['store_hash'],
                                                      access_token=store['access_token'],
                                                      resource_id=product_id,
@@ -145,7 +115,7 @@ def product_view(product_id, store, web):
 @click.option('-s', '--store', required=True)
 @click.option('--field', default=None)
 def product_edit(product_id, store, field):
-    store = get_store_creds(store)
+    store = read_from_app_dir('stores.json')[store]
     catalog_product = bigcommerce.CatalogProduct.get(store_hash=store['store_hash'],
                                                      access_token=store['access_token'],
                                                      resource_id=product_id,

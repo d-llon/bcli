@@ -1,3 +1,6 @@
+import json
+import subprocess
+import tempfile
 import webbrowser
 
 import click
@@ -119,40 +122,19 @@ def product_edit(product_id, store, field):
     catalog_product = bigcommerce.CatalogProduct.get(store_hash=store['store_hash'],
                                                      access_token=store['access_token'],
                                                      resource_id=product_id,
-                                                     params={'include': 'variants'})
+                                                     params={'include_fields': 'name,price,sale_price'})
 
-    echo(pretty_table.CatalogProduct.build_table([catalog_product]))
+    with tempfile.NamedTemporaryFile(mode='w+') as tmp:
+        json.dump(catalog_product, tmp, indent=4)
+        tmp.flush()
+        subprocess.call(['nano', tmp.name])
+        tmp.seek(0)
+        catalog_product_updated = json.load(tmp)
 
-    if not field:
-        user_input = prompt([
-            {
-                'type': 'list',
-                'name': 'field',
-                'message': 'What field would you like to edit?',
-                'choices': list(catalog_product.keys())
-            },
-        ])
-        field = user_input['field']
+    fields_updated = dict(set(catalog_product_updated.items()) - set(catalog_product.items()))
 
-    user_input = prompt([
-        {
-            'type': 'input',
-            'name': 'value',
-            'message': f'New value: ',
-            'default': catalog_product[field]
-        },
-        {
-            'type': 'confirm',
-            'name': 'confirm',
-            'message': 'Submit?'
-        }
-    ])
-
-    if user_input['confirm']:
+    if fields_updated:
         bigcommerce.CatalogProduct.put(store_hash=store['store_hash'],
                                        access_token=store['access_token'],
                                        resource_id=product_id,
-                                       json={field: user_input['value']})
-        echo('Edit complete.')
-    else:
-        echo('Edit canceled.')
+                                       json=fields_updated)

@@ -51,3 +51,26 @@ def delete_store(store_name):
     """ Delete a set of API credentials by store name. """
     delete_from_app_dir('stores.json', key=store_name)
     echo(f'Deleted store ({store_name}).')
+
+
+@click.command()
+@click.argument('store_name', required=False, default=None)
+def active_store(store_name):
+    """ Read or set an active store. """
+    settings = read_from_app_dir('settings.json')
+    stores = read_from_app_dir('stores.json')
+
+    if store_name:
+        if store_name not in stores.keys():
+            raise ValueError(f'No saved store \'{store_name}\'')
+        write_to_app_dir('settings.json',
+                         key='active_store',
+                         value=store_name)
+    else:
+        store_name = settings.get('active_store')
+        if not store_name or store_name not in stores.keys():
+            echo('No active store.')
+            return
+
+        store_hash = stores[store_name]["store_hash"]
+        echo(f'Active store: {store_name} ({store_hash})')

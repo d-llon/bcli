@@ -2,17 +2,16 @@ import webbrowser
 
 import click
 
-from ..utils import read_from_app_dir, bigcommerce, pretty_table
+from ..utils import bigcommerce, pretty_table, get_active_store
 
 
 @click.command()
 @click.argument('product_id', default=None, required=False)
 @click.option('--filter_name', default=None)
-@click.option('-s', '--store', required=True)
 @click.option('-w', '--web', is_flag=True)
-def product(product_id, filter_name, store, web):
+def product(product_id, filter_name, web):
+    store: dict = get_active_store()
     if not product_id:
-        store = read_from_app_dir('stores.json')[store]
         catalog_products = bigcommerce.CatalogProduct.get(store_hash=store['store_hash'],
                                                           access_token=store['access_token'],
                                                           params={'limit': 250, 'include': 'variants'})
@@ -22,7 +21,6 @@ def product(product_id, filter_name, store, web):
 
         click.echo(pretty_table.CatalogProduct.build_table(catalog_products))
     else:
-        store = read_from_app_dir('stores.json')[store]
         catalog_product = bigcommerce.CatalogProduct.get(store_hash=store['store_hash'],
                                                          access_token=store['access_token'],
                                                          resource_id=product_id,

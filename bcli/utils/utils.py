@@ -52,3 +52,14 @@ def delete_from_app_dir(file_name: str, key: str) -> dict:
         json.dump(file_data, file)
 
     return file_data
+
+
+def get_active_store() -> dict:
+    settings = read_from_app_dir('settings.json')
+    stores = read_from_app_dir('stores.json')
+
+    store_name = settings.get('active_store')
+    if not store_name or store_name not in stores.keys():
+        raise Exception('No active store.')
+
+    return stores[store_name]

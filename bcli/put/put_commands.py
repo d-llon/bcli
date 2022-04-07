@@ -4,14 +4,13 @@ import tempfile
 
 import click
 
-from ..utils import read_from_app_dir, bigcommerce
+from ..utils import bigcommerce, get_active_store
 
 
 @click.command()
 @click.argument('product_id')
-@click.option('-s', '--store', required=True)
-def product(product_id, store):
-    store = read_from_app_dir('stores.json')[store]
+def product(product_id):
+    store: dict = get_active_store()
     catalog_product = bigcommerce.CatalogProduct.get(store_hash=store['store_hash'],
                                                      access_token=store['access_token'],
                                                      resource_id=product_id,

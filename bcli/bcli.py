@@ -44,3 +44,4 @@ def settings():
 settings.add_command(settings_commands.list_stores)
 settings.add_command(settings_commands.add_store)
 settings.add_command(settings_commands.delete_store)
+settings.add_command(settings_commands.active_store)

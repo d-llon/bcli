@@ -8,8 +8,8 @@ class BaseResource:
     subdir: str
 
     @classmethod
-    def get(cls, store_hash: str, access_token: str, resource_id: Optional[int] = None, **kwargs):
-        bc_request = BigCommerceRequest(store_hash=store_hash, access_token=access_token)
+    def get(cls, resource_id: Optional[int] = None, **kwargs):
+        bc_request = BigCommerceRequest()
         resource_data = bc_request.get(api_version=cls.api_version,
                                        subdir=cls.subdir,
                                        resource_id=resource_id,
@@ -17,8 +17,8 @@ class BaseResource:
         return resource_data
 
     @classmethod
-    def put(cls, store_hash: str, access_token: str, resource_id: int, **kwargs):
-        bc_request = BigCommerceRequest(store_hash=store_hash, access_token=access_token)
+    def put(cls, resource_id: int, **kwargs):
+        bc_request = BigCommerceRequest()
         resource_data = bc_request.put(api_version=cls.api_version,
                                        subdir=cls.subdir,
                                        resource_id=resource_id,

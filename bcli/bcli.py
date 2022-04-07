@@ -10,12 +10,11 @@ def bcli():
     pass
 
 
-@bcli.group()
+@bcli.group(
+    commands=[get_commands.product]
+)
 def get():
     pass
-
-
-get.add_command(get_commands.product)
 
 
 @bcli.group()
@@ -23,12 +22,11 @@ def post():
     pass
 
 
-@bcli.group()
+@bcli.group(
+    commands=[put_commands.product]
+)
 def put():
     pass
-
-
-put.add_command(put_commands.product)
 
 
 @bcli.group()
@@ -36,12 +34,9 @@ def delete():
     pass
 
 
-@bcli.group()
+@bcli.group(
+    commands=[settings_commands.list_stores, settings_commands.add_store, settings_commands.delete_store,
+              settings_commands.active_store]
+)
 def settings():
     pass
-
-
-settings.add_command(settings_commands.list_stores)
-settings.add_command(settings_commands.add_store)
-settings.add_command(settings_commands.delete_store)
-settings.add_command(settings_commands.active_store)

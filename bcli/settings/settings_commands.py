@@ -56,7 +56,7 @@ def delete_store(store_name):
 @click.command()
 @click.argument('store_name', required=False, default=None)
 def active_store(store_name):
-    """ Read or set an active store. """
+    """ Display or set active store API credentials by store name. """
     settings = read_from_app_dir('settings.json')
     stores = read_from_app_dir('stores.json')
 

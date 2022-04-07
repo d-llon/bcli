@@ -10,7 +10,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'bcli = bcli.bcli:bcli',
+            'bcli = bcli.commands:bcli',
         ],
     },
 )

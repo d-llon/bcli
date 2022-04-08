@@ -12,21 +12,21 @@ from ..utils import bigcommerce, pretty_table, get_active_store
 def products(product_id, filter_name, web):
     store: dict = get_active_store()
     if not product_id:
-        catalog_products = bigcommerce.Products.get(params={'include': 'variants'})
+        bc_products = bigcommerce.Products.get(params={'include': 'variants'})
         if filter_name:
-            catalog_products = [p for p in catalog_products
-                                if filter_name.lower() in p['name'].lower()]
+            bc_products = [p for p in bc_products
+                           if filter_name.lower() in p['name'].lower()]
 
-        click.echo(pretty_table.CatalogProduct.build_table(catalog_products))
+        click.echo(pretty_table.Products.build_table(bc_products))
     else:
-        catalog_product = bigcommerce.Products.get(resource_id=product_id,
-                                                   params={'include': 'variants'})
+        bc_product = bigcommerce.Products.get(resource_id=product_id,
+                                              params={'include': 'variants'})
 
-        catalog_product_variants = bigcommerce.ProductVariants.get(resource_id=product_id)
+        bc_product_variants = bigcommerce.ProductVariants.get(resource_id=product_id)
         if web:
             webbrowser.open(
                 f'https://store-{store["store_hash"]}.mybigcommerce.com/manage/products/edit/{product_id}')
         else:
-            click.echo(pretty_table.CatalogProduct.build_table([catalog_product]))
-            if len(catalog_product_variants) > 1:
-                click.echo(pretty_table.CatalogProductVariant.build_table(catalog_product_variants))
+            click.echo(pretty_table.Products.build_table([bc_product]))
+            if len(bc_product_variants) > 1:
+                click.echo(pretty_table.ProductVariants.build_table(bc_product_variants))

@@ -1,7 +1,7 @@
 from prettytable import PrettyTable
 
 
-class CatalogProductVariant:
+class ProductVariants:
     @staticmethod
     def build_table(catalog_product_variants: list[dict]):
         table = PrettyTable()

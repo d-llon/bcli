@@ -9,7 +9,7 @@ from ..utils import bigcommerce, pretty_table, get_active_store
 @click.argument('product_id', default=None, required=False)
 @click.option('--filter_name', default=None)
 @click.option('-w', '--web', is_flag=True)
-def product(product_id, filter_name, web):
+def products(product_id, filter_name, web):
     store: dict = get_active_store()
     if not product_id:
         catalog_products = bigcommerce.Products.get(params={'include': 'variants'})

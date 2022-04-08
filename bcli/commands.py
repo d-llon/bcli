@@ -11,7 +11,7 @@ def bcli():
 
 
 @bcli.group(
-    commands=[get_commands.product]
+    commands=[get_commands.products]
 )
 def get():
     pass
@@ -23,7 +23,7 @@ def post():
 
 
 @bcli.group(
-    commands=[put_commands.product]
+    commands=[put_commands.products]
 )
 def put():
     pass

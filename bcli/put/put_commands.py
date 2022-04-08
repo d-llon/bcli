@@ -9,7 +9,7 @@ from ..utils import bigcommerce
 
 @click.command()
 @click.argument('product_id')
-def product(product_id):
+def products(product_id):
     catalog_product = bigcommerce.Products.get(resource_id=product_id,
                                                params={'include_fields': 'name,price,sale_price'})
 

@@ -4,14 +4,14 @@ import tempfile
 
 import click
 
-from ..utils import bigcommerce, get_active_store
+from ..utils import bigcommerce
 
 
 @click.command()
 @click.argument('product_id')
 def product(product_id):
-    catalog_product = bigcommerce.CatalogProduct.get(resource_id=product_id,
-                                                     params={'include_fields': 'name,price,sale_price'})
+    catalog_product = bigcommerce.Products.get(resource_id=product_id,
+                                               params={'include_fields': 'name,price,sale_price'})
 
     with tempfile.NamedTemporaryFile(mode='w+') as tmp:
         json.dump(catalog_product, tmp, indent=4)
@@ -23,5 +23,5 @@ def product(product_id):
     fields_updated = dict(set(catalog_product_updated.items()) - set(catalog_product.items()))
 
     if fields_updated:
-        bigcommerce.CatalogProduct.put(resource_id=product_id,
-                                       json=fields_updated)
+        bigcommerce.Products.put(resource_id=product_id,
+                                 json=fields_updated)

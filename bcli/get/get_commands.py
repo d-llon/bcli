@@ -12,7 +12,7 @@ from ..utils import bigcommerce, pretty_table, get_active_store
 def product(product_id, filter_name, web):
     store: dict = get_active_store()
     if not product_id:
-        catalog_products = bigcommerce.CatalogProduct.get(params={'limit': 250, 'include': 'variants'})
+        catalog_products = bigcommerce.CatalogProduct.get(params={'include': 'variants'})
         if filter_name:
             catalog_products = [p for p in catalog_products
                                 if filter_name.lower() in p['name'].lower()]

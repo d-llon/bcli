@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "bcli"
+version = "0.1.0"
+description = "BigCommerce Management CLI"
+authors = ["dhartle4 <dhartle4@uncc.edu>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+click = "^8.1.2"
+requests = "^2.27.1"
+prettytable = "^3.2.0"
+PyInquirer = "^1.0.3"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+bcli = "bcli.commands:bcli"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

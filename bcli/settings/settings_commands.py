@@ -1,30 +1,15 @@
 import click
 from PyInquirer import prompt
 from click import echo
-from prettytable import PrettyTable
 
-from ..utils import read_from_app_dir, write_to_app_dir, delete_from_app_dir
+from ..utils import read_from_app_dir, write_to_app_dir, delete_from_app_dir, pretty_tables
 
 
 @click.command()
 def list_stores():
     """ Print all saved API credentials. """
     stores = read_from_app_dir('stores.json')
-
-    table = PrettyTable()
-    table.field_names = ['Store', 'Store Hash', 'Access Token']
-    table.align['Store'] = "l"
-    table.align['Store Hash'] = "l"
-    table.align['Access Token'] = "l"
-
-    for store_name, store_creds in stores.items():
-        table.add_row([
-            store_name,
-            store_creds['store_hash'],
-            store_creds['access_token']
-        ])
-
-    echo(table)
+    echo(pretty_tables.stores_table(stores))
 
 
 @click.command()

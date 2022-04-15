@@ -11,7 +11,7 @@ def bcli():
 
 
 @bcli.group(
-    commands=[get_commands.products]
+    commands=[get_commands.products, get_commands.customers]
 )
 def get():
     pass

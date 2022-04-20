@@ -23,7 +23,7 @@ def post():
 
 
 @bcli.group(
-    commands=[put_commands.products]
+    commands=[put_commands.products, put_commands.customers]
 )
 def put():
     pass

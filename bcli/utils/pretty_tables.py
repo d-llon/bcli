@@ -5,10 +5,9 @@ from prettytable import PrettyTable
 
 def customers_table(customers: list[dict]):
     table = PrettyTable()
-    table.field_names = ['ID', 'Name', 'Email', 'Customer Group ID']
+    table.field_names = ['ID', 'Name', 'Email', 'Group ID']
     table.align['Name'] = "l"
     table.align['Email'] = "l"
-    table.align['Customer Group ID'] = "l"
 
     for c in customers:
         table.add_row([

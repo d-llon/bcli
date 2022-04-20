@@ -36,5 +36,5 @@ def products(product_id, filter_name, web):
 @click.argument('customer_id', default=None, required=False)
 def customers(customer_id):
     if not customer_id:
-        bc_customers = bigcommerce.Customers.get()
+        bc_customers = bigcommerce.CustomersV3.get()
         click.echo(pretty_tables.customers_table(bc_customers))

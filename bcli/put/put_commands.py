@@ -10,6 +10,7 @@ from ..utils import bigcommerce
 @click.command()
 @click.argument('product_id')
 def products(product_id):
+    """ Request '/catalog/products' endpoint. """
     # TODO: Use a typed dict?
     editable_keys = ['name', 'type', 'sku', 'weight', 'width', 'depth', 'height', 'price', 'sale_price', 'tax_class_id',
                      'brand_id', 'inventory_level', 'inventory_tracking', 'is_free_shipping', 'is_visible',
@@ -37,6 +38,7 @@ def products(product_id):
 @click.command()
 @click.argument('customer_id')
 def customers(customer_id):
+    """ Request '/customers' endpoint. """
     editable_keys = ['email', 'first_name', 'last_name', 'company', 'phone', 'notes', 'tax_exempt_category',
                      'customer_group_id', ]
 

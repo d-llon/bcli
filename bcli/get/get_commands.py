@@ -10,6 +10,7 @@ from ..utils import bigcommerce, pretty_tables, get_active_store
 @click.option('--filter_name', default=None)
 @click.option('-w', '--web', is_flag=True)
 def products(product_id, filter_name, web):
+    """ Request '/catalog/products' endpoint with an optional PRODUCT_ID`. """
     store: dict = get_active_store()
     if not product_id:
         bc_products = bigcommerce.Products.get(params={'include': 'variants'})
@@ -35,6 +36,7 @@ def products(product_id, filter_name, web):
 @click.command()
 @click.argument('customer_id', default=None, required=False)
 def customers(customer_id):
+    """ Request '/customers' endpoint with an optional CUSTOMER_ID. """
     if not customer_id:
         bc_customers = bigcommerce.CustomersV3.get()
         click.echo(pretty_tables.customers_table(bc_customers))

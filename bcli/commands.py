@@ -14,11 +14,13 @@ def bcli():
     commands=[get_commands.products, get_commands.customers]
 )
 def get():
+    """ Make a GET request. """
     pass
 
 
 @bcli.group()
 def post():
+    """ Make a POST request. """
     pass
 
 
@@ -26,11 +28,13 @@ def post():
     commands=[put_commands.products, put_commands.customers]
 )
 def put():
+    """ Make a PUT request. """
     pass
 
 
 @bcli.group()
 def delete():
+    """ Make a DELETE request. """
     pass
 
 
@@ -39,4 +43,5 @@ def delete():
               settings_commands.active_store]
 )
 def settings():
+    """ Manage BCLI settings and stores. """
     pass

@@ -1,20 +1,26 @@
 from prettytable import PrettyTable
 
+from . import bigcommerce_strptime
+
 
 # BigCommerce Tables ---------------------------------------------------------------------------------------------------
 
 def customers_table(customers: list[dict]):
     table = PrettyTable()
-    table.field_names = ['ID', 'Name', 'Email', 'Group ID']
+    table.field_names = ['ID', 'Name', 'Email', 'Phone', 'Group ID', 'Joined']
     table.align['Name'] = "l"
     table.align['Email'] = "l"
+    table.align['Phone'] = "l"
+    table.align['Joined'] = "l"
 
     for c in customers:
         table.add_row([
             c['id'],
             f'{c["first_name"].strip()} {c["last_name"].strip()}',
             c['email'],
+            c['phone'],
             c['customer_group_id'],
+            bigcommerce_strptime(c['date_created']).strftime('%b %d %Y'),
         ])
     return table
 
@@ -38,18 +44,18 @@ def product_variants_table(product_variants: list[dict]):
 
 def products_table(products: list[dict]):
     table = PrettyTable()
-    table.field_names = ['ID', 'Name', 'Price', 'Sale Price', 'Variants']
+    table.field_names = ['ID', 'SKU', 'Name', 'Price', 'Visible']
+    table.align['SKU'] = 'l'
     table.align['Name'] = "l"
     table.align['Price'] = "l"
-    table.align['Sale Price'] = "l"
 
-    for cp in products:
+    for p in products:
         table.add_row([
-            cp['id'],
-            cp['name'],
-            '{:,.2f}'.format(float(cp['price'])),
-            '{:,.2f}'.format(float(cp['sale_price'])),
-            '🟢' if len(cp['variants']) > 1 else '⚫️'
+            p['id'],
+            p['sku'],
+            p['name'],
+            '{:,.2f}'.format(float(p['price'])),
+            p['is_visible']
         ])
     return table
 

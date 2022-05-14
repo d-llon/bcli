@@ -1,3 +1,4 @@
+import datetime
 import json
 from pathlib import Path
 
@@ -64,3 +65,14 @@ def get_active_store() -> dict:
         raise Exception('No active store.')
 
     return stores[store_name]
+
+
+def bigcommerce_strptime(date: str):
+    known_formats = ['%a, %d %b %Y %H:%M:%S %z', '%Y-%m-%dT%H:%M:%SZ']
+
+    for format in known_formats:
+        try:
+            return datetime.datetime.strptime(date, format)
+        except ValueError:
+            continue
+    raise ValueError(f'time data \'{date}\' does not match a known format')

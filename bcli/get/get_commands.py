@@ -27,7 +27,7 @@ def products(product_id, filter_name, web):
         else:
             bc_product = bigcommerce.Products.get(resource_id=product_id)
             bc_product.pop('description')
-            print(json.dumps(bc_product, indent=4))
+            click.echo(json.dumps(bc_product, indent=4))
 
 
 @click.command()
@@ -40,7 +40,7 @@ def customers(customer_id, filter_name, web):
         bc_customers = bigcommerce.CustomersV3.get(params={'limit': '250'})
         if filter_name:
             bc_customers = [c for c in bc_customers if
-                            filter_name.lower() in f"{c['first_name']} {c['last_name']}".lower()]
+                            filter_name.lower() in f'{c["first_name"]} {c["last_name"]}'.lower()]
 
         click.echo(pretty_tables.customers_table(bc_customers))
     else:
@@ -51,4 +51,4 @@ def customers(customer_id, filter_name, web):
         else:
             bc_customer = bigcommerce.CustomersV2.get(resource_id=customer_id)
             bc_customer.pop('addresses')
-            print(json.dumps(bc_customer, indent=4))
+            click.echo(json.dumps(bc_customer, indent=4))

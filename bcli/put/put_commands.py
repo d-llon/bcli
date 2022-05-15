@@ -31,8 +31,8 @@ def products(product_id):
 
     if fields_updated:
         bigcommerce.Products.put(resource_id=product_id, json=fields_updated)
-        print('Fields Updated:')
-        print(json.dumps(fields_updated, indent=4))
+        click.echo('Fields Updated:')
+        click.echo(json.dumps(fields_updated, indent=4))
 
 
 @click.command()
@@ -40,7 +40,8 @@ def products(product_id):
 def customers(customer_id):
     """ Request '/customers' endpoint. """
     editable_keys = ['email', 'first_name', 'last_name', 'company', 'phone', 'notes', 'tax_exempt_category',
-                     'customer_group_id', ]
+                     'customer_group_id', 'authentication', 'accepts_product_review_abandoned_cart_emails',
+                     'store_credit_amounts', 'origin_channel_id', 'channel_ids', 'form_fields']
 
     bc_customer: dict = bigcommerce.CustomersV2.get(resource_id=customer_id)
     bc_customer = {key: bc_customer[key] for key in bc_customer.keys() if key in editable_keys}
@@ -56,5 +57,5 @@ def customers(customer_id):
 
     if fields_updated:
         bigcommerce.CustomersV2.put(resource_id=customer_id, json=fields_updated)
-        print('Fields Updated:')
-        print(json.dumps(fields_updated, indent=4))
+        click.echo('Fields Updated:')
+        click.echo(json.dumps(fields_updated, indent=4))

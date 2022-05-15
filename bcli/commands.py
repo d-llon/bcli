@@ -1,5 +1,6 @@
 import click
 
+from .delete import delete_commands
 from .get import get_commands
 from .put import put_commands
 from .settings import settings_commands
@@ -32,7 +33,9 @@ def put():
     pass
 
 
-@bcli.group()
+@bcli.group(
+    commands=[delete_commands.products, delete_commands.customers]
+)
 def delete():
     """ Make a DELETE request. """
     pass

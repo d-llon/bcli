@@ -9,6 +9,14 @@ class BaseSubresource:
     linking_subdir: str
 
     @classmethod
+    def delete(cls, resource_id: int, subresource_id: int, **kwargs):
+        bc_request = BigCommerceRequest()
+        bc_request.delete(api_version=cls.api_version,
+                          subdir=f'{cls.subdir}/{resource_id}/{cls.linking_subdir}',
+                          resource_id=subresource_id,
+                          **kwargs)
+
+    @classmethod
     def get(cls, resource_id: int, subresource_id: Optional[int] = None, **kwargs):
         bc_request = BigCommerceRequest()
         subresource_data = bc_request.get(api_version=cls.api_version,

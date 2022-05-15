@@ -1,6 +1,8 @@
 from typing import Optional
-from ..utils import get_active_store
+
 import requests
+
+from ..utils import get_active_store
 
 
 class BigCommerceRequest:
@@ -11,6 +13,12 @@ class BigCommerceRequest:
         store = get_active_store()
         self.api_base = f'https://api.bigcommerce.com/stores/{store["store_hash"]}'
         self.headers = {'accept': 'application/json', 'x-auth-token': store['access_token']}
+
+    def delete(self, api_version: str, subdir: str, resource_id: int, **kwargs):
+        url = f'{self.api_base}/{api_version}/{subdir}/{resource_id}'
+
+        response = requests.delete(url, headers=self.headers, **kwargs)
+        response.raise_for_status()
 
     def get(self, api_version: str, subdir: str, resource_id: Optional[int] = None, **kwargs):
         params = kwargs.pop('params', {})

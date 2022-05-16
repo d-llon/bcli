@@ -1,5 +1,4 @@
 import click
-from PyInquirer import prompt
 from click import echo
 
 from ..utils import read_from_app_dir, write_to_app_dir, delete_from_app_dir, pretty_tables
@@ -15,19 +14,17 @@ def list_stores():
 @click.command()
 def add_store():
     """ Save store API credentials. """
-    user_input = prompt([
-        {'type': 'input', 'name': 'store_name', 'message': f'Store name: '},
-        {'type': 'input', 'name': 'store_hash', 'message': f'Store hash: '},
-        {'type': 'input', 'name': 'access_token', 'message': f'Access token: '},
-    ])
+    store_name = click.prompt('Store name: ', type=str)
+    store_hash = click.prompt('Store hash: ', type=str)
+    access_token = click.prompt('Access token: ', type=str)
 
-    if read_from_app_dir('stores.json').get(user_input['store_name']):
-        user_input['confirm'] = prompt([{'type': 'confirm', 'name': 'confirm', 'message': f'Overwrite? '}])['confirm']
+    if read_from_app_dir('stores.json').get(store_name):
+        if not click.confirm('Overwrite? '):
+            return
 
-    if user_input.get('confirm', True):
-        write_to_app_dir('stores.json',
-                         key=user_input['store_name'],
-                         value={'store_hash': user_input['store_hash'], 'access_token': user_input['access_token']})
+    write_to_app_dir('stores.json',
+                     key=store_name,
+                     value={'store_hash': store_hash, 'access_token': access_token})
 
 
 @click.command()

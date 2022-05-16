@@ -2,6 +2,7 @@ import click
 
 from .delete import delete_commands
 from .get import get_commands
+from .post import post_commands
 from .put import put_commands
 from .settings import settings_commands
 
@@ -19,7 +20,9 @@ def get():
     pass
 
 
-@bcli.group()
+@bcli.group(
+    commands=[post_commands.products, post_commands.customers]
+)
 def post():
     """ Make a POST request. """
     pass

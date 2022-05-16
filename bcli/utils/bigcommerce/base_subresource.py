@@ -24,3 +24,11 @@ class BaseSubresource:
                                           resource_id=subresource_id,
                                           **kwargs)
         return subresource_data
+
+    @classmethod
+    def post(cls, resource_id: int, **kwargs):
+        bc_request = BigCommerceRequest()
+        subresource_data = bc_request.get(api_version=cls.api_version,
+                                          subdir=f'{cls.subdir}/{resource_id}/{cls.linking_subdir}',
+                                          **kwargs)
+        return subresource_data

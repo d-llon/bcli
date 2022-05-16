@@ -50,6 +50,17 @@ class BigCommerceRequest:
 
         return response.json()
 
+    def post(self, api_version: str, subdir: str, **kwargs):
+        url = f'{self.api_base}/{api_version}/{subdir}'
+
+        response = requests.post(url, headers=self.headers, **kwargs)
+        response.raise_for_status()
+
+        if api_version == "v3":
+            return response.json()['data']
+
+        return response.json()
+
     def put(self, api_version: str, subdir: str, resource_id: int, **kwargs):
         url = f'{self.api_base}/{api_version}/{subdir}/{resource_id}'
 

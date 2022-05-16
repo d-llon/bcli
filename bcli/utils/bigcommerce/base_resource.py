@@ -25,6 +25,14 @@ class BaseResource:
         return resource_data
 
     @classmethod
+    def post(cls, **kwargs):
+        bc_request = BigCommerceRequest()
+        resource_data = bc_request.post(api_version=cls.api_version,
+                                        subdir=cls.subdir,
+                                        **kwargs)
+        return resource_data
+
+    @classmethod
     def put(cls, resource_id: int, **kwargs):
         bc_request = BigCommerceRequest()
         resource_data = bc_request.put(api_version=cls.api_version,

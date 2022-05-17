@@ -1,9 +1,10 @@
+from abc import ABC
 from typing import Optional
 
 from .bigcommerce_request import BigCommerceRequest
 
 
-class BaseSubresource:
+class BaseSubresource(ABC):
     api_version: str
     subdir: str
     linking_subdir: str

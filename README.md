@@ -16,10 +16,7 @@ time by ditching BigCommerce's browser based admin UI.
 
 # Installation
 
-`bcli` is coming soon on PyPI. If you are too excited to wait, you can clone this repo and install `bcli` at your home
-directory like:
-
-`~ pip3 install PycharmProjects/bigcommerce_management_cli/`
+[`bcli` is available on PyPI](https://pypi.org/project/bigcommerce-cli/). Use the command `pip install bigcommerce-cli` for easy installation. 
 
 # Getting Started
 

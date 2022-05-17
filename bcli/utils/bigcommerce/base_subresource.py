@@ -33,3 +33,12 @@ class BaseSubresource(ABC):
                                           subdir=f'{cls.subdir}/{resource_id}/{cls.linking_subdir}',
                                           **kwargs)
         return subresource_data
+
+    @classmethod
+    def put(cls, resource_id: int, subresource_id: int, **kwargs):
+        bc_request = BigCommerceRequest()
+        subresource_data = bc_request.put(api_version=cls.api_version,
+                                          subdir=f'{cls.subdir}/{resource_id}/{cls.linking_subdir}',
+                                          resource_id=subresource_id,
+                                          **kwargs)
+        return subresource_data

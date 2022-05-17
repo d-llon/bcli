@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "bcli"
+name = "bigcommerce-cli"
 version = "0.1.0"
 description = "BigCommerce Management CLI"
 authors = ["dhartle4 <dhartle4@uncc.edu>"]
@@ -13,7 +13,7 @@ prettytable = "^3.3.0"
 [tool.poetry.dev-dependencies]
 
 [tool.poetry.scripts]
-bcli = "bcli.commands:bcli"
+bcli = "bigcommerce_cli.commands:bcli"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

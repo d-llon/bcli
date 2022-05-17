@@ -1,6 +1,6 @@
 import click
 
-from bcli.utils import bigcommerce
+from bigcommerce_cli.utils import bigcommerce
 
 
 @click.command()

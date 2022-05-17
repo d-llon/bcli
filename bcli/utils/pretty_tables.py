@@ -2,16 +2,23 @@ from prettytable import PrettyTable
 
 from . import bigcommerce_strptime
 
+LEFT = 'l'
+RIGHT = 'r'
+CENTER = 'c'
+
+
+class BCLITable(PrettyTable):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.align = LEFT
+
 
 # BigCommerce Tables ---------------------------------------------------------------------------------------------------
 
 def customers_table(customers: list[dict]):
-    table = PrettyTable()
+    table = BCLITable()
     table.field_names = ['ID', 'Name', 'Email', 'Phone', 'Group ID', 'Joined']
-    table.align['Name'] = "l"
-    table.align['Email'] = "l"
-    table.align['Phone'] = "l"
-    table.align['Joined'] = "l"
+    table.align['Group ID'] = CENTER
 
     for c in customers:
         table.add_row([
@@ -26,11 +33,8 @@ def customers_table(customers: list[dict]):
 
 
 def product_variants_table(product_variants: list[dict]):
-    table = PrettyTable()
+    table = BCLITable()
     table.field_names = ['Variant ID', 'Label', 'Price', 'Sale Price']
-    table.align['Label'] = "l"
-    table.align['Price'] = "l"
-    table.align['Sale Price'] = "l"
 
     for variant in product_variants:
         table.add_row([
@@ -43,11 +47,8 @@ def product_variants_table(product_variants: list[dict]):
 
 
 def products_table(products: list[dict]):
-    table = PrettyTable()
+    table = BCLITable()
     table.field_names = ['ID', 'SKU', 'Name', 'Price', 'Visible']
-    table.align['SKU'] = 'l'
-    table.align['Name'] = "l"
-    table.align['Price'] = "l"
 
     for p in products:
         table.add_row([
@@ -63,11 +64,8 @@ def products_table(products: list[dict]):
 # BCLI Tables ----------------------------------------------------------------------------------------------------------
 
 def stores_table(stores: dict):
-    table = PrettyTable()
+    table = BCLITable()
     table.field_names = ['Store', 'Store Hash', 'Access Token']
-    table.align['Store'] = "l"
-    table.align['Store Hash'] = "l"
-    table.align['Access Token'] = "l"
 
     for store_name, store_creds in stores.items():
         table.add_row([

@@ -68,6 +68,7 @@ def get_active_store() -> dict:
 
 
 def bigcommerce_strptime(date: str):
+    """ Parse a datetime from a string using a list of known BC date formats. """
     known_formats = ['%a, %d %b %Y %H:%M:%S %z', '%Y-%m-%dT%H:%M:%SZ']
 
     for format in known_formats:
@@ -75,4 +76,4 @@ def bigcommerce_strptime(date: str):
             return datetime.datetime.strptime(date, format)
         except ValueError:
             continue
-    raise ValueError(f'time data \'{date}\' does not match a known format')
+    raise ValueError(f'Time data \'{date}\' does not match a known format')

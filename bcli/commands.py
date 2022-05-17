@@ -13,7 +13,7 @@ def bcli():
 
 
 @bcli.group(
-    commands=[get_commands.products, get_commands.customers]
+    commands=[get_commands.products, get_commands.product_variants, get_commands.customers]
 )
 def get():
     """ Make a GET request. """
@@ -29,7 +29,7 @@ def post():
 
 
 @bcli.group(
-    commands=[put_commands.products, put_commands.customers]
+    commands=[put_commands.products, put_commands.product_variants, put_commands.customers]
 )
 def put():
     """ Make a PUT request. """

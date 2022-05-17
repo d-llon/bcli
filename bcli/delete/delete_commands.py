@@ -6,7 +6,7 @@ from ..utils import bigcommerce
 @click.command()
 @click.argument('product_id')
 def products(product_id):
-    """ Request '/catalog/products' endpoint. """
+    """ Request '/catalog/products/<product_id>' endpoint. """
     bc_product = bigcommerce.Products.get(resource_id=product_id)
 
     if click.confirm(f'Delete ({product_id}) {bc_product["name"]}?'):
@@ -17,7 +17,7 @@ def products(product_id):
 @click.command()
 @click.argument('customer_id')
 def customers(customer_id):
-    """ Request '/customers' endpoint. """
+    """ Request '/customers/<customer_id>' endpoint. """
     bc_customer = bigcommerce.CustomersV2.get(resource_id=customer_id)
     full_name = f'{bc_customer["first_name"].strip()} {bc_customer["last_name"].strip()}'
 

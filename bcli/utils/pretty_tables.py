@@ -34,14 +34,15 @@ def customers_table(customers: list[dict]):
 
 def product_variants_table(product_variants: list[dict]):
     table = BCLITable()
-    table.field_names = ['Variant ID', 'Label', 'Price', 'Sale Price']
+    table.field_names = ['ID', 'Variant', 'SKU', 'Price', 'Purchasable']
 
     for variant in product_variants:
         table.add_row([
             variant['id'],
             variant['option_values'][0]['label'],
+            variant['sku'],
             '{:,.2f}'.format(float(variant['price'] or 0)),
-            '{:,.2f}'.format(float(variant['sale_price'] or 0)),
+            not variant['purchasing_disabled'],
         ])
     return table
 

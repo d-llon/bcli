@@ -1,8 +1,12 @@
 [tool.poetry]
 name = "bigcommerce-cli"
-version = "0.1.0"
-description = "BigCommerce Management CLI"
+version = "0.1.1"
+description = "bcli is BigCommerce store management on the command line."
 authors = ["dhartle4 <dhartle4@uncc.edu>"]
+readme = "README.md"
+homepage = "https://github.com/dhartle4/bcli"
+repository = "https://github.com/dhartle4/bcli"
+keywords = ["bigcommerce", "cli"]
 
 [tool.poetry.dependencies]
 python = "^3.9"

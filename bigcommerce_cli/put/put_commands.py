@@ -1,6 +1,4 @@
 import json
-import subprocess
-import tempfile
 
 import click
 
@@ -19,19 +17,12 @@ def products(product_id):
     bc_product = bigcommerce.Products.get(resource_id=product_id)
     bc_product = {key: bc_product[key] for key in bc_product.keys() if key in editable_keys}
 
-    with tempfile.NamedTemporaryFile(mode='w+') as tmp:
-        json.dump(bc_product, tmp, indent=4)
-        tmp.flush()
-        subprocess.call(['nano', tmp.name])
-        tmp.seek(0)
-        bc_product_updated = json.load(tmp)
+    fields_edited = launch_editor(bc_product)
 
-    fields_updated = dict(set(bc_product_updated.items()) - set(bc_product.items()))
-
-    if fields_updated:
-        bigcommerce.Products.put(resource_id=product_id, json=fields_updated)
+    if fields_edited:
+        bigcommerce.Products.put(resource_id=product_id, json=fields_edited)
         click.echo('Fields Updated:')
-        click.echo(json.dumps(fields_updated, indent=4))
+        click.echo(json.dumps(fields_edited, indent=4))
 
 
 @click.command()
@@ -47,19 +38,12 @@ def product_variants(product_id, variant_id):
     bc_variant = bigcommerce.ProductVariants.get(resource_id=product_id, subresource_id=variant_id)
     bc_variant = {key: bc_variant[key] for key in bc_variant.keys() if key in editable_keys}
 
-    with tempfile.NamedTemporaryFile(mode='w+') as tmp:
-        json.dump(bc_variant, tmp, indent=4)
-        tmp.flush()
-        subprocess.call(['nano', tmp.name])
-        tmp.seek(0)
-        bc_variant_updated = json.load(tmp)
+    fields_edited = launch_editor(bc_variant)
 
-    fields_updated = dict(set(bc_variant_updated.items()) - set(bc_variant.items()))
-
-    if fields_updated:
-        bigcommerce.ProductVariants.put(resource_id=product_id, subresource_id=variant_id, json=fields_updated)
+    if fields_edited:
+        bigcommerce.ProductVariants.put(resource_id=product_id, subresource_id=variant_id, json=fields_edited)
         click.echo('Fields Updated:')
-        click.echo(json.dumps(fields_updated, indent=4))
+        click.echo(json.dumps(fields_edited, indent=4))
 
 
 @click.command()
@@ -73,16 +57,23 @@ def customers(customer_id):
     bc_customer: dict = bigcommerce.CustomersV2.get(resource_id=customer_id)
     bc_customer = {key: bc_customer[key] for key in bc_customer.keys() if key in editable_keys}
 
-    with tempfile.NamedTemporaryFile(mode='w+') as tmp:
-        json.dump(bc_customer, tmp, indent=4)
-        tmp.flush()
-        subprocess.call(['nano', tmp.name])
-        tmp.seek(0)
-        bc_customer_updated = json.load(tmp)
+    fields_edited = launch_editor(bc_customer)
 
-    fields_updated = dict(set(bc_customer_updated.items()) - set(bc_customer.items()))
-
-    if fields_updated:
-        bigcommerce.CustomersV2.put(resource_id=customer_id, json=fields_updated)
+    if fields_edited:
+        bigcommerce.CustomersV2.put(resource_id=customer_id, json=fields_edited)
         click.echo('Fields Updated:')
-        click.echo(json.dumps(fields_updated, indent=4))
+        click.echo(json.dumps(fields_edited, indent=4))
+
+
+# HELPERS --------------------------------------------------------------------------------------------------------------
+def launch_editor(value: dict) -> dict:
+    """ Launch the user's default editor with dictionary data and return any fields edited. """
+    text = json.dumps(value, indent=4)
+    edited_text = click.edit(text=text, require_save=False, extension='.json')
+    edited_value = json.loads(edited_text)
+
+    if len(edited_value.keys()) != len(value.keys()):
+        raise ValueError('You may not add or remove keys when editing BigCommerce data.')
+
+    fields_edited = dict(set(edited_value.items()) - set(value.items()))
+    return fields_edited

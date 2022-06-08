@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bigcommerce-cli"
-version = "0.1.1"
+version = "0.1.2"
 description = "bcli is BigCommerce store management on the command line."
 authors = ["dhartle4 <dhartle4@uncc.edu>"]
 readme = "README.md"

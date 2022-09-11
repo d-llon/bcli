@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 import click
+from click import ClickException
 from pygments import highlight, lexers, formatters
 
 
@@ -63,7 +64,7 @@ def get_active_store() -> dict:
 
     store_name = settings.get('active_store')
     if not store_name or store_name not in stores.keys():
-        raise Exception('No active store.')
+        raise ClickException('No active store.')
 
     return stores[store_name]
 
@@ -77,7 +78,7 @@ def bigcommerce_strptime(date: str):
             return datetime.datetime.strptime(date, format)
         except ValueError:
             continue
-    raise ValueError(f'Time data \'{date}\' does not match a known format')
+    raise ClickException(f'Time data \'{date}\' does not match a known format')
 
 
 def format_for_humans(value: dict):

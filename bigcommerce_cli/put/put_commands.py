@@ -1,6 +1,7 @@
 import json
 
 import click
+from click import ClickException
 
 from ..utils import bigcommerce, format_for_humans
 
@@ -89,7 +90,7 @@ def launch_editor(value: dict) -> dict:
     edited_value = json.loads(edited_text)
 
     if len(edited_value.keys()) != len(value.keys()):
-        raise ValueError('You may not add or remove keys when editing BigCommerce data.')
+        raise ClickException('You may not add or remove keys when editing BigCommerce data.')
 
     fields_edited = dict(set(edited_value.items()) - set(value.items()))
     return fields_edited

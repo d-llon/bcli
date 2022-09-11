@@ -1,8 +1,18 @@
 from typing import Optional
 
 import requests
+from click import ClickException
 
 from ..utils import get_active_store
+
+
+def raise_click_exception_for_status(response: requests.Response):
+    """ Raises a ClickException for status codes between 400 and 600. """
+    if 400 <= response.status_code < 600:
+        message = f'BigCommerce exception ({response.status_code})'
+        if title := response.json().get('title'):
+            message = f'{message} \'{title}\''
+        raise ClickException(message)
 
 
 class BigCommerceRequest:
@@ -18,7 +28,7 @@ class BigCommerceRequest:
         url = f'{self.api_base}/{api_version}/{subdir}/{resource_id}'
 
         response = requests.delete(url, headers=self.headers, **kwargs)
-        response.raise_for_status()
+        raise_click_exception_for_status(response)
 
     def get(self, api_version: str, subdir: str, resource_id: Optional[int] = None, **kwargs):
         params = kwargs.pop('params', {})
@@ -30,7 +40,7 @@ class BigCommerceRequest:
             params['page'] = 1
 
         response = requests.get(url, headers=self.headers, params=params, **kwargs)
-        response.raise_for_status()
+        raise_click_exception_for_status(response)
 
         if api_version == "v3":
             data = response.json()['data']
@@ -41,7 +51,7 @@ class BigCommerceRequest:
                     params['page'] = current_page + 1
 
                     response = requests.get(url, headers=self.headers, params=params, **kwargs)
-                    response.raise_for_status()
+                    raise_click_exception_for_status(response)
 
                     data.extend(response.json()['data'])
                     meta = response.json()['meta']
@@ -54,7 +64,7 @@ class BigCommerceRequest:
         url = f'{self.api_base}/{api_version}/{subdir}'
 
         response = requests.post(url, headers=self.headers, **kwargs)
-        response.raise_for_status()
+        raise_click_exception_for_status(response)
 
         if api_version == "v3":
             return response.json()['data']
@@ -65,7 +75,7 @@ class BigCommerceRequest:
         url = f'{self.api_base}/{api_version}/{subdir}/{resource_id}'
 
         response = requests.put(url, headers=self.headers, **kwargs)
-        response.raise_for_status()
+        raise_click_exception_for_status(response)
 
         if api_version == "v3":
             return response.json()['data']

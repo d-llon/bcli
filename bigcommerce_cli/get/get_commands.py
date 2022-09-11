@@ -2,6 +2,7 @@ import json
 import webbrowser
 
 import click
+from pygments import highlight, lexers, formatters
 
 from ..utils import bigcommerce, pretty_tables, get_active_store
 
@@ -27,7 +28,9 @@ def products(product_id, filter_name, web):
         else:
             bc_product = bigcommerce.Products.get(resource_id=product_id)
             bc_product.pop('description')
-            click.echo(json.dumps(bc_product, indent=4))
+            formatted_json = json.dumps(bc_product, indent=4)
+            colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
+            click.echo(colorful_json)
 
 
 @click.command()
@@ -46,7 +49,9 @@ def product_variants(product_id, variant_id):
             click.echo(pretty_tables.product_variants_table(bc_variants))
     else:
         bc_variant = bigcommerce.ProductVariants.get(resource_id=product_id, subresource_id=variant_id)
-        click.echo(json.dumps(bc_variant, indent=4))
+        formatted_json = json.dumps(bc_variant, indent=4)
+        colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
+        click.echo(colorful_json)
 
 
 @click.command()
@@ -70,4 +75,6 @@ def customers(customer_id, filter_name, web):
         else:
             bc_customer = bigcommerce.CustomersV2.get(resource_id=customer_id)
             bc_customer.pop('addresses')
-            click.echo(json.dumps(bc_customer, indent=4))
+            formatted_json = json.dumps(bc_customer, indent=4)
+            colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
+            click.echo(colorful_json)

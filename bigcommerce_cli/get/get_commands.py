@@ -1,10 +1,8 @@
-import json
 import webbrowser
 
 import click
-from pygments import highlight, lexers, formatters
 
-from ..utils import bigcommerce, pretty_tables, get_active_store
+from ..utils import bigcommerce, pretty_tables, get_active_store, format_for_humans
 
 
 @click.command()
@@ -28,9 +26,7 @@ def products(product_id, filter_name, web):
         else:
             bc_product = bigcommerce.Products.get(resource_id=product_id)
             bc_product.pop('description')
-            formatted_json = json.dumps(bc_product, indent=4)
-            colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
-            click.echo(colorful_json)
+            click.echo(format_for_humans(bc_product))
 
 
 @click.command()
@@ -49,9 +45,7 @@ def product_variants(product_id, variant_id):
             click.echo(pretty_tables.product_variants_table(bc_variants))
     else:
         bc_variant = bigcommerce.ProductVariants.get(resource_id=product_id, subresource_id=variant_id)
-        formatted_json = json.dumps(bc_variant, indent=4)
-        colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
-        click.echo(colorful_json)
+        click.echo(format_for_humans(bc_variant))
 
 
 @click.command()
@@ -75,9 +69,7 @@ def customers(customer_id, filter_name, web):
         else:
             bc_customer = bigcommerce.CustomersV2.get(resource_id=customer_id)
             bc_customer.pop('addresses')
-            formatted_json = json.dumps(bc_customer, indent=4)
-            colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
-            click.echo(colorful_json)
+            click.echo(format_for_humans(bc_customer))
 
 
 @click.command()
@@ -89,6 +81,4 @@ def webhooks(webhook_id):
         click.echo(pretty_tables.webhooks_table(bc_webhooks))
     else:
         bc_webhook = bigcommerce.Webhooks.get(resource_id=webhook_id)
-        formatted_json = json.dumps(bc_webhook, indent=4)
-        colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
-        click.echo(colorful_json)
+        click.echo(format_for_humans(bc_webhook))

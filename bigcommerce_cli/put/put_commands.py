@@ -2,7 +2,7 @@ import json
 
 import click
 
-from ..utils import bigcommerce
+from ..utils import bigcommerce, format_for_humans
 
 
 @click.command()
@@ -22,7 +22,7 @@ def products(product_id):
     if fields_edited:
         bigcommerce.Products.put(resource_id=product_id, json=fields_edited)
         click.echo('Fields Updated:')
-        click.echo(json.dumps(fields_edited, indent=4))
+        click.echo(format_for_humans(fields_edited))
 
 
 @click.command()
@@ -43,7 +43,7 @@ def product_variants(product_id, variant_id):
     if fields_edited:
         bigcommerce.ProductVariants.put(resource_id=product_id, subresource_id=variant_id, json=fields_edited)
         click.echo('Fields Updated:')
-        click.echo(json.dumps(fields_edited, indent=4))
+        click.echo(format_for_humans(fields_edited))
 
 
 @click.command()
@@ -62,7 +62,7 @@ def customers(customer_id):
     if fields_edited:
         bigcommerce.CustomersV2.put(resource_id=customer_id, json=fields_edited)
         click.echo('Fields Updated:')
-        click.echo(json.dumps(fields_edited, indent=4))
+        click.echo(format_for_humans(fields_edited))
 
 
 @click.command()
@@ -78,7 +78,7 @@ def webhooks(webhook_id):
 
     if fields_edited:
         bigcommerce.Webhooks.put(resource_id=webhook_id, json=fields_edited)
-        click.echo(json.dumps(fields_edited, indent=4))
+        click.echo(format_for_humans(fields_edited))
 
 
 # HELPERS --------------------------------------------------------------------------------------------------------------

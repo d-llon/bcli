@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 import click
+from pygments import highlight, lexers, formatters
 
 
 def read_from_app_dir(file_name: str) -> dict:
@@ -77,3 +78,10 @@ def bigcommerce_strptime(date: str):
         except ValueError:
             continue
     raise ValueError(f'Time data \'{date}\' does not match a known format')
+
+
+def format_for_humans(value: dict):
+    """ Format a python dict to print for a bcli user. """
+    formatted = json.dumps(value, indent=4)
+    formatted_and_colorized = highlight(formatted, lexers.JsonLexer(), formatters.TerminalFormatter())
+    return formatted_and_colorized

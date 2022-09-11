@@ -1,7 +1,7 @@
 import click
 
 from bigcommerce_cli.utils import bigcommerce
-from bigcommerce_cli.utils.click_extras import DictParamType
+from bigcommerce_cli.utils.click_extensions import DictParamType
 
 
 @click.command()

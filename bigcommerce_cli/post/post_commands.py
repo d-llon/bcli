@@ -6,15 +6,17 @@ from bigcommerce_cli.utils import bigcommerce
 @click.command()
 def products():
     """ Request '/catalog/products' endpoint. """
-    name = click.prompt('Name: ', type=str)
-    type = click.prompt('Type: ', type=str, default='physical')
-    weight = click.prompt('Weight: ', type=float, default=0.0)
-    price = click.prompt('Price: ', type=float)
+    name = click.prompt('Name', type=str)
+    type = click.prompt('Type', type=str, default='physical')
+    weight = click.prompt('Weight', type=float, default=0.0)
+    price = click.prompt('Price', type=float)
+    visible = click.confirm('Visible')
 
     bc_product = bigcommerce.Products.post(json={'name': name,
                                                  'type': type,
                                                  'weight': weight,
-                                                 'price': price})
+                                                 'price': price,
+                                                 'is_visible': visible})
 
     click.echo(f'Created ({bc_product["id"]}) {bc_product["name"]}')
 

@@ -54,7 +54,7 @@ def customers(customer_id):
                      'customer_group_id', 'authentication', 'accepts_product_review_abandoned_cart_emails',
                      'store_credit_amounts', 'origin_channel_id', 'channel_ids', 'form_fields']
 
-    bc_customer: dict = bigcommerce.CustomersV2.get(resource_id=customer_id)
+    bc_customer = bigcommerce.CustomersV2.get(resource_id=customer_id)
     bc_customer = {key: bc_customer[key] for key in bc_customer.keys() if key in editable_keys}
 
     fields_edited = launch_editor(bc_customer)
@@ -62,6 +62,22 @@ def customers(customer_id):
     if fields_edited:
         bigcommerce.CustomersV2.put(resource_id=customer_id, json=fields_edited)
         click.echo('Fields Updated:')
+        click.echo(json.dumps(fields_edited, indent=4))
+
+
+@click.command()
+@click.argument('webhook_id')
+def webhooks(webhook_id):
+    """ Request '/hooks' endpoint."""
+    editable_keys = ['scope', 'destination', 'is_active', 'events_history_enabled']
+
+    bc_webhook = bigcommerce.Webhooks.get(resource_id=webhook_id)
+    bc_webhook = {key: bc_webhook[key] for key in bc_webhook.keys() if key in editable_keys}
+
+    fields_edited = launch_editor(bc_webhook)
+
+    if fields_edited:
+        bigcommerce.Webhooks.put(resource_id=webhook_id, json=fields_edited)
         click.echo(json.dumps(fields_edited, indent=4))
 
 

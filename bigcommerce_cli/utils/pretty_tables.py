@@ -57,7 +57,21 @@ def products_table(products: list[dict]):
             p['sku'],
             p['name'],
             '{:,.2f}'.format(float(p['price'])),
-            p['is_visible']
+            p['is_visible'],
+        ])
+    return table
+
+
+def webhooks_table(webhooks: list[dict]):
+    table = BCLITable()
+    table.field_names = ['ID', 'Scope', 'Destination', 'Active']
+
+    for w in webhooks:
+        table.add_row([
+            w['id'],
+            w['scope'],
+            w['destination'],
+            w['is_active'],
         ])
     return table
 
@@ -72,6 +86,6 @@ def stores_table(stores: dict):
         table.add_row([
             store_name,
             store_creds['store_hash'],
-            store_creds['access_token']
+            store_creds['access_token'],
         ])
     return table

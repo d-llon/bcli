@@ -78,3 +78,17 @@ def customers(customer_id, filter_name, web):
             formatted_json = json.dumps(bc_customer, indent=4)
             colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
             click.echo(colorful_json)
+
+
+@click.command()
+@click.argument('webhook_id', default=None, required=False)
+def webhooks(webhook_id):
+    """ Request '/hooks' endpoint with an optional WEBHOOK_ID. """
+    if not webhook_id:
+        bc_webhooks = bigcommerce.Webhooks.get(params={'limit': '250'})
+        click.echo(pretty_tables.webhooks_table(bc_webhooks))
+    else:
+        bc_webhook = bigcommerce.Webhooks.get(resource_id=webhook_id)
+        formatted_json = json.dumps(bc_webhook, indent=4)
+        colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
+        click.echo(colorful_json)

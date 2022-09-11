@@ -13,7 +13,7 @@ def bcli():
 
 
 @bcli.group(
-    commands=[get_commands.products, get_commands.product_variants, get_commands.customers]
+    commands=[get_commands.products, get_commands.product_variants, get_commands.customers, get_commands.webhooks]
 )
 def get():
     """ Make a GET request. """
@@ -21,7 +21,7 @@ def get():
 
 
 @bcli.group(
-    commands=[post_commands.products, post_commands.customers]
+    commands=[post_commands.products, post_commands.customers, post_commands.webhooks]
 )
 def post():
     """ Make a POST request. """
@@ -29,7 +29,7 @@ def post():
 
 
 @bcli.group(
-    commands=[put_commands.products, put_commands.product_variants, put_commands.customers]
+    commands=[put_commands.products, put_commands.product_variants, put_commands.customers, put_commands.webhooks]
 )
 def put():
     """ Make a PUT request. """
@@ -37,7 +37,7 @@ def put():
 
 
 @bcli.group(
-    commands=[delete_commands.products, delete_commands.customers]
+    commands=[delete_commands.products, delete_commands.customers, delete_commands.webhooks]
 )
 def delete():
     """ Make a DELETE request. """

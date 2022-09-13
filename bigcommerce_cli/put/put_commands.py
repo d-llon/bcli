@@ -7,21 +7,20 @@ from ..utils import bigcommerce, format_for_humans
 
 
 @click.command()
-@click.argument('product_id')
-def products(product_id):
-    """ Request '/catalog/products/<product_id>' endpoint. """
-    editable_keys = ['name', 'type', 'sku', 'weight', 'width', 'depth', 'height', 'price', 'sale_price', 'tax_class_id',
-                     'brand_id', 'inventory_level', 'inventory_tracking', 'is_free_shipping', 'is_visible',
-                     'is_featured', 'availability', 'sort_order', 'order_quantity_minimum', 'order_quantity_maximum',
-                     'page_title']
+@click.argument('customer_id')
+def customers(customer_id):
+    """ Request '/customers/<customer_id>' endpoint. """
+    editable_keys = ['email', 'first_name', 'last_name', 'company', 'phone', 'notes', 'tax_exempt_category',
+                     'customer_group_id', 'authentication', 'accepts_product_review_abandoned_cart_emails',
+                     'store_credit_amounts', 'origin_channel_id', 'channel_ids', 'form_fields']
 
-    bc_product = bigcommerce.Products.get(resource_id=product_id)
-    bc_product = {key: bc_product[key] for key in bc_product.keys() if key in editable_keys}
+    bc_customer = bigcommerce.CustomersV2.get(resource_id=customer_id)
+    bc_customer = {key: bc_customer[key] for key in bc_customer.keys() if key in editable_keys}
 
-    fields_edited = launch_editor(bc_product)
+    fields_edited = launch_editor(bc_customer)
 
     if fields_edited:
-        bigcommerce.Products.put(resource_id=product_id, json=fields_edited)
+        bigcommerce.CustomersV2.put(resource_id=customer_id, json=fields_edited)
         click.echo('Fields Updated:')
         click.echo(format_for_humans(fields_edited))
 
@@ -48,20 +47,21 @@ def product_variants(product_id, variant_id):
 
 
 @click.command()
-@click.argument('customer_id')
-def customers(customer_id):
-    """ Request '/customers/<customer_id>' endpoint. """
-    editable_keys = ['email', 'first_name', 'last_name', 'company', 'phone', 'notes', 'tax_exempt_category',
-                     'customer_group_id', 'authentication', 'accepts_product_review_abandoned_cart_emails',
-                     'store_credit_amounts', 'origin_channel_id', 'channel_ids', 'form_fields']
+@click.argument('product_id')
+def products(product_id):
+    """ Request '/catalog/products/<product_id>' endpoint. """
+    editable_keys = ['name', 'type', 'sku', 'weight', 'width', 'depth', 'height', 'price', 'sale_price', 'tax_class_id',
+                     'brand_id', 'inventory_level', 'inventory_tracking', 'is_free_shipping', 'is_visible',
+                     'is_featured', 'availability', 'sort_order', 'order_quantity_minimum', 'order_quantity_maximum',
+                     'page_title']
 
-    bc_customer = bigcommerce.CustomersV2.get(resource_id=customer_id)
-    bc_customer = {key: bc_customer[key] for key in bc_customer.keys() if key in editable_keys}
+    bc_product = bigcommerce.Products.get(resource_id=product_id)
+    bc_product = {key: bc_product[key] for key in bc_product.keys() if key in editable_keys}
 
-    fields_edited = launch_editor(bc_customer)
+    fields_edited = launch_editor(bc_product)
 
     if fields_edited:
-        bigcommerce.CustomersV2.put(resource_id=customer_id, json=fields_edited)
+        bigcommerce.Products.put(resource_id=product_id, json=fields_edited)
         click.echo('Fields Updated:')
         click.echo(format_for_humans(fields_edited))
 

@@ -37,7 +37,7 @@ class BigCommerceRequest:
             url = f'{self.api_base}/{api_version}/{subdir}/{resource_id}'
         else:
             url = f'{self.api_base}/{api_version}/{subdir}'
-            params['page'] = 1
+            params['page'] = params.get('page', 1)
 
         response = requests.get(url, headers=self.headers, params=params, **kwargs)
         raise_click_exception_for_status(response)
@@ -57,6 +57,10 @@ class BigCommerceRequest:
                     meta = response.json()['meta']
 
             return data
+
+        if not resource_id and response.status_code == 204:
+            # If you are making a list request for a page without content
+            return []
 
         return response.json()
 

@@ -30,6 +30,36 @@ def customers(customer_id, filter_email, web):
 
 
 @click.command()
+@click.argument('order_id')
+@click.argument('order_product_id', default=None, required=False)
+def order_products(order_id, order_product_id):
+    """ ... """
+    if not order_product_id:
+        bc_order_products = bigcommerce.OrderProducts.get(resource_id=order_id, params={'limit': 250})
+        click.echo(pretty_tables.order_products_table(bc_order_products))
+    else:
+        bc_order_product = bigcommerce.OrderProducts.get(resource_id=order_id, subresource_id=order_product_id)
+        click.echo(format_for_humans(bc_order_product))
+
+
+@click.command()
+@click.argument('order_id', default=None, required=False)
+# @click.option('--filter_email', default=None)
+def orders(order_id):
+    """ ... """
+    if not order_id:
+        bc_orders = bigcommerce.Orders.get()
+        bc_customers = bigcommerce.CustomersV3.get(params={'limit': '250'})
+        click.echo(pretty_tables.orders_table(bc_orders, bc_customers))
+    else:
+        bc_order = bigcommerce.Orders.get(order_id)
+        bc_order.pop('products')
+        bc_order.pop('shipping_addresses')
+        bc_order.pop('coupons')
+        click.echo(format_for_humans(bc_order))
+
+
+@click.command()
 @click.argument('product_id')
 @click.argument('variant_id', default=None, required=False)
 def product_variants(product_id, variant_id):

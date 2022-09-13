@@ -13,7 +13,8 @@ def bcli():
 
 
 @bcli.group(
-    commands=[get_commands.customers, get_commands.product_variants, get_commands.products, get_commands.webhooks]
+    commands=[get_commands.customers, get_commands.order_products, get_commands.orders, get_commands.product_variants,
+              get_commands.products, get_commands.webhooks]
 )
 def get():
     """ Make a GET request. """

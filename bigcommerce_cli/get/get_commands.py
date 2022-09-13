@@ -50,15 +50,15 @@ def product_variants(product_id, variant_id):
 
 @click.command()
 @click.argument('customer_id', default=None, required=False)
-@click.option('--filter_name', default=None)
+@click.option('--filter_email', default=None)
 @click.option('-w', '--web', is_flag=True)
-def customers(customer_id, filter_name, web):
+def customers(customer_id, filter_email, web):
     """ Request '/customers' endpoint with an optional CUSTOMER_ID. """
     if not customer_id:
         bc_customers = bigcommerce.CustomersV3.get(params={'limit': '250'})
-        if filter_name:
+        if filter_email:
             bc_customers = [c for c in bc_customers if
-                            filter_name.lower() in f'{c["first_name"]} {c["last_name"]}'.lower()]
+                            filter_email.lower() in c['email'].lower()]
 
         click.echo(pretty_tables.customers_table(bc_customers))
     else:

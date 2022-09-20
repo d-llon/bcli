@@ -37,17 +37,25 @@ class BigCommerceRequest:
             url = f'{self.api_base}/{api_version}/{subdir}/{resource_id}'
         else:
             url = f'{self.api_base}/{api_version}/{subdir}'
-            params['page'] = 1
+            params['page'] = params.get('page', 1)
+            params['limit'] = params.get('limit', 250)
 
         response = requests.get(url, headers=self.headers, params=params, **kwargs)
         raise_click_exception_for_status(response)
+
+        if api_version == 'v2':
+            if not resource_id and response.status_code == 204:
+                # If you are making a list request for a page without content
+                return []
+
+            return response.json()
 
         if api_version == "v3":
             data = response.json()['data']
             meta = response.json()['meta']
 
             if meta.get('pagination'):
-                while (current_page := meta['pagination']['current_page']) != meta['pagination']['total_pages']:
+                while (current_page := meta['pagination']['current_page']) < meta['pagination']['total_pages']:
                     params['page'] = current_page + 1
 
                     response = requests.get(url, headers=self.headers, params=params, **kwargs)
@@ -57,8 +65,6 @@ class BigCommerceRequest:
                     meta = response.json()['meta']
 
             return data
-
-        return response.json()
 
     def post(self, api_version: str, subdir: str, **kwargs):
         url = f'{self.api_base}/{api_version}/{subdir}'

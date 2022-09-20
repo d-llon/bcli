@@ -30,35 +30,39 @@ Once `bcli` has an active store, you can make DELETE, GET, POST, and PUT command
 
 Delete a BigCommerce resource.
 
-- `bcli delete products <product id>`
 - `bcli delete customers <customer id>`
+- `bcli delete products <product id>`
 - `bcli delete webhooks <webhook id>`
 
 Get a list of BigCommerce resources.
 
-- `bcli get products`
-- `bcli get product-variants <product id>`
 - `bcli get customers`
+- `bcli get order-products <order id>`
+- `bcli get orders`
+- `bcli get product-variants <product id>`
+- `bcli get products`
 - `bcli get webhooks`
 
 Get details about a BigCommerce resource.
 
-- `bcli get products <product id>`
-- `bcli get product-variants <product id> <variant id>`
 - `bcli get customers <customer id>`
+- `bcli get order-products <order id> <order product id>`
+- `bcli get orders <order id>`
+- `bcli get product-variants <product id> <variant id>`
+- `bcli get products <product id>`
 - `bcli get webhooks <webhook id>`
 
 Update a BigCommerce resource.
 
-- `bcli put products <product id>`
-- `bcli put product-variants <product id> <variant id>`
 - `bcli put customers <customer id>`
+- `bcli put product-variants <product id> <variant id>`
+- `bcli put products <product id>`
 - `bcli put webhooks <webhook id>`
 
 Create a BigCommerce resource.
 
-- `bcli post products`
 - `bcli post customers`
+- `bcli post products`
 - `bcli post webhooks`
 
 Manage `bcli` settings.

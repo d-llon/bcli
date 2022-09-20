@@ -21,9 +21,9 @@ class Orders(BaseResource):
             count_data = bc_request.get(api_version=cls.api_version,
                                         subdir=f'{cls.subdir}/count')
             count = count_data['count']
+
             resource_data = []
             page = 1
-
             while len(resource_data) < count:
                 kwargs['params'] = kwargs.get('params', {}) | {'limit': 250, 'page': page}
                 page_data = bc_request.get(api_version=cls.api_version,

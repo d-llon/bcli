@@ -56,11 +56,11 @@ def orders_table(orders: list[dict], customers: list[dict]):
 
     customers_map = {c['id']: c for c in customers}
     for o in orders:
-        c = customers_map[o['customer_id']]
+        c = customers_map.get(o['customer_id'], {})  # Sometimes the customer responsible for an order gets deleted
         table.add_row([
             o['id'],
-            f'{c["first_name"].strip()} {c["last_name"].strip()}',
-            c['email'],
+            f'{c.get("first_name", "").strip()} {c.get("last_name", "").strip()}',
+            c.get('email', ''),
             o['status'],
             o['order_is_digital'],
             o['items_total'],
